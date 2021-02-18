@@ -1,0 +1,52 @@
+DEFINE JOB Loyalty_FILE_LOAD
+DESCRIPTION 'Load a Teradata table from a Loyalty_file'
+(
+DEFINE SCHEMA SCHEMA_Loyalty_file
+from table 'Landing_layer.loyalty_file';
+
+DEFINE OPERATOR op_Loyalty_file
+TYPE DATACONNECTOR PRODUCER
+SCHEMA SCHEMA_Loyalty_file
+ATTRIBUTES
+(
+VARCHAR DirectoryPath= 'C:\Users\rs255097\OneDrive - Teradata\Desktop\phase 2\DataFiles',
+VARCHAR FileName = 'Loyalty_file.csv',
+VARCHAR Format = 'Delimited',
+VARCHAR OpenMode = 'Read',
+VARCHAR TextDelimiter =',',
+VARCHAR DateForm='AnsiDate',
+INTEGER SkipRows = 1
+);
+
+
+DEFINE OPERATOR ol_Loyalty_file
+TYPE LOAD
+SCHEMA *
+ATTRIBUTES
+(
+VARCHAR LogonMech = '',
+VARCHAR PrivateLogName = 'load_log',
+VARCHAR TdpId = '192.168.72.128',
+VARCHAR UserName = 'Students',
+VARCHAR UserPassword = 'learning',
+VARCHAR LogTable = 'Landing_layer.Loyalty_file_LG',
+VARCHAR ErrorTable1 = 'Landing_layer.Loyalty_file_ET',
+VARCHAR ErrorTable2 = 'Landing_layer.Loyalty_file_UV',
+VARCHAR TargetTable = 'Landing_layer.Loyalty_file',
+VARCHAR DateForm='AnsiDate'
+);
+
+
+
+STEP stLOAD_FILE_NAME
+(
+APPLY
+('INSERT INTO Landing_layer.Loyalty_file
+(sbscrbr,user_id,loyalty_badge,loyalty_spent,loyalty_accrue,Reg_date_time)
+VALUES
+(:sbscrbr,:user_id,:loyalty_badge,:loyalty_spent,:loyalty_accrue,:Reg_date_time);
+')
+TO OPERATOR (ol_Loyalty_file)
+SELECT * FROM OPERATOR(op_Loyalty_file);
+);
+);

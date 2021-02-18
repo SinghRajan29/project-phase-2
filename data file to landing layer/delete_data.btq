@@ -1,0 +1,27 @@
+Logon Students,learning;
+
+
+delete  from Landing_layer.cust_prfl;
+delete  from Landing_layer.cust_stats; 
+delete  from Landing_layer.loyalty_file;
+delete  from Landing_layer.plan_master;
+delete  from Landing_layer.data_plan_run; 
+delete  from Landing_layer.voice_plan_run;
+
+delete  from staging_layer.st_cust_prfl;
+delete  from staging_layer.st_cust_stats; 
+delete  from staging_layer.st_loyalty;
+delete  from staging_layer.st_plan_master;
+delete  from staging_layer.st_data_plan_run; 
+delete  from staging_layer.st_voice_plan_run;
+delete  from staging_layer.st_history_record;
+
+delete  from Core_Layer1.customer_profile;
+delete  from Core_Layer1.customer_status; 
+delete  from Core_Layer1.loyalty;
+delete  from Core_Layer1.Plan_Master;
+delete  from Core_Layer1.history_record;
+
+
+
+Logoff;

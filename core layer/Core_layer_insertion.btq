@@ -1,0 +1,82 @@
+.logon 192.168.72.128/Students,learning;
+
+database Core_Layer1;
+
+
+insert into Core_Layer1.Customer_Profile
+		select 
+			sbscrbr,
+			user_id,
+			Gender,
+			Status,
+			DOB,
+			Address,
+			State,
+			PIN ,
+			CURRENT_TIMESTAMP 
+	        
+		from staging_layer.st_cust_prfl;
+
+
+
+
+insert into Core_Layer1.Customer_status
+		 select 
+		 	sbscrbr,
+			Paid_date,
+			Status,
+			CURRENT_TIMESTAMP 
+
+		 from staging_layer.st_cust_stats;
+
+
+insert into Core_Layer1.loyalty 
+		select 
+			sbscrbr,
+        		user_id,
+        		loyalty_badge,
+        		loyalty_spent,
+        		loyalty_accrue,
+        		Reg_date_time,
+        		Invalid_user,
+        		CURRENT_TIMESTAMP
+
+	        from staging_layer.st_loyalty;
+
+
+insert into Core_Layer1.Plan_Master
+		select 
+			Plan_Type,
+			Plan_Description,
+			Data_rate_per_kb,
+			free_voice_minutes,
+			free_sms,
+			rate_per_minute,
+			sms_rate,
+			monthly_charge,
+			CURRENT_TIMESTAMP
+
+	        from staging_layer.st_plan_master;
+
+
+insert into Core_Layer1.History_Record
+		select 
+			sbscrbr,
+			Plan_Type,
+			load_date,
+			data_usage,
+			voice_usage,
+			sms_usage,
+			data_amount,
+			voice_amount,
+			sms_amount,
+			plan_change_status,
+			monthly_plan_change_amount,
+			daily_plan_amount,
+			CURRENT_TIMESTAMP
+
+
+	        from staging_layer.st_History_record;
+
+
+.logoff;

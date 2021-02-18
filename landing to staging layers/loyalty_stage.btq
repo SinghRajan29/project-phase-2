@@ -1,0 +1,53 @@
+.LOGON 192.168.72.128/Students,learning
+
+   insert into staging_layer.st_loyalty
+  select cast(sbscrbr as NUMBER(10)),
+         user_id,
+         loyalty_badge,
+         cast(loyalty_spent as INTEGER),
+         cast(loyalty_accrue as INTEGER),
+         cast(Reg_date_time as date format 'dd/mm/yyyy'),
+         'No',
+	 CURRENT_TIMESTAMP
+	 
+         from Landing_layer.loyalty_file;
+
+
+  update staging_layer.st_Loyalty
+    set loyalty_badge = CASE loyalty_badge
+        when 'SLVR' then 'Silver'
+        when 'GOLD' then 'Gold'
+        when 'BRNZ' then 'Bronze'
+        when 'PLAT' then 'Platinum'
+    end;
+  
+ update staging_layer.st_Loyalty
+    set invalid_user = 'Yes' where sbscrbr not in(
+				select sbscrbr from staging_layer.st_cust_prfl
+				);
+
+
+.IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF
+
+
+
+
+
+
+
+
+
+1:56 PM 1/22/2021
+
+2:41 PM 1/22/2021
+
+4:13 PM 1/23/2021
+
+6:38 PM 1/23/2021
+
+5:09 PM 1/24/2021
+
+12:44 14-02-2021
+
+17:54 14-02-2021

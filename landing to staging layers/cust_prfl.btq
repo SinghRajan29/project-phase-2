@@ -1,0 +1,45 @@
+.LOGON 192.168.72.128/Students,learning;
+  
+  INSERT INTO staging_layer.st_cust_prfl
+  SELECT CAST(sbscrbr AS NUMBER(10)),
+	 user_id,
+	 Gender,
+	 Status,
+	 to_date(( RegExp_Replace(LPAD(dob, 10, '0'),'[/]','-')),'mm-dd-yyyy' ),
+	 oreplace(REGEXP_REPLACE(address,'[A-Z][A-Z]\s[0-9][0-9][0-9][0-9][0-9]',' '),',',null),
+         REGEXP_SUBSTR(address,'[A-Z]+[A-Z]+'),
+         REGEXP_SUBSTR(address,'[0-9][0-9][0-9][0-9][0-9]'),
+	 CURRENT_TIMESTAMP
+  FROM Landing_layer.cust_prfl;
+
+.IF ERRORCODE <> 0 THEN .EXIT ERRORCODE;
+
+	update staging_layer.st_cust_prfl set
+	address= oreplace(address,'š',null);
+
+  .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE;
+.LOGOFF;
+
+
+
+2:39 PM 1/22/2021
+
+2:50 PM 1/22/2021
+
+3:33 PM 1/22/2021
+
+4:04 PM 1/23/2021
+
+5:49 PM 1/23/2021
+
+6:55 PM 1/23/2021
+
+12:43 14-02-2021
+
+17:52 14-02-2021
+
+18:05 14-02-2021
+
+18:11 14-02-2021
+
+20:09 14-02-2021

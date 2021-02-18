@@ -1,0 +1,33 @@
+.LOGON 192.168.72.128/Students,learning;
+  
+  INSERT INTO staging_layer.st_plan_master
+  SELECT 
+	Plan_Type ,
+	Plan_Description,
+	CAST(Data_rate_per_kb AS DECIMAL(5,2)),
+	CAST(free_voice_minutes AS DECIMAL(5,2)),
+	ZEROIFNULL(CAST(free_sms AS DECIMAL(5,2))),
+	CAST(rate_per_minute AS DECIMAL(5,2)),
+	CAST(sms_rate AS DECIMAL(5,2)),
+	CAST(monthly_charge AS DECIMAL(5,2)),
+	CURRENT_TIMESTAMP
+	FROM Landing_layer.plan_master;
+
+
+
+  .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE;
+.LOGOFF;
+
+
+3:28 PM 1/22/2021
+
+3:31 PM 1/22/2021
+5:05 PM 1/22/2021
+
+6:45 PM 1/22/2021
+
+4:15 PM 1/23/2021
+
+12:44 14-02-2021
+
+17:54 14-02-2021

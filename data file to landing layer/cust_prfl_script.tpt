@@ -1,0 +1,55 @@
+DEFINE JOB customer_prfl_FILE_LOAD
+DESCRIPTION 'Load a Teradata table from a file customer_prfl'
+(
+DEFINE SCHEMA SCHEMA_Cust_Prfl
+from table 'Landing_layer.Cust_Prfl';
+
+DEFINE OPERATOR op_Cust_Prfl
+TYPE DATACONNECTOR PRODUCER
+SCHEMA SCHEMA_Cust_Prfl
+ATTRIBUTES
+(
+VARCHAR DirectoryPath= 'C:\Users\rs255097\OneDrive - Teradata\Desktop\phase 2\DataFiles',
+VARCHAR FileName = 'Cust_Prfl.csv',
+VARCHAR Format = 'Delimited',
+VARCHAR OpenMode = 'Read',
+varchar QuotedData = 'optional',
+VARCHAR TextDelimiter =',',
+VARCHAR DateForm='AnsiDate',
+INTEGER SkipRows = 1,
+INTEGER MaxSessions=6
+);
+
+
+
+DEFINE OPERATOR ol_Cust_Prfl
+TYPE LOAD
+SCHEMA *
+ATTRIBUTES
+(
+VARCHAR LogonMech = '',
+VARCHAR PrivateLogName = 'load_log',
+VARCHAR TdpId = '192.168.72.128',
+VARCHAR UserName = 'Students',
+VARCHAR UserPassword = 'learning',
+VARCHAR DateForm='AnsiDate',
+VARCHAR LogTable = 'Landing_layer.Cust_Prfl_LG',
+VARCHAR ErrorTable1 = 'Landing_layer.Cust_Prfl_ET',
+VARCHAR ErrorTable2 = 'Landing_layer.Cust_Prfl_UV',
+VARCHAR TargetTable = 'Landing_layer.Cust_Prfl'
+);
+
+
+
+STEP stLOAD_FILE_NAME
+(
+APPLY
+('INSERT INTO Landing_layer.Cust_Prfl
+(sbscrbr,user_id,Gender,Status,DOB,Address)
+VALUES
+(:sbscrbr,:user_id,:Gender,:Status,:DOB,:Address);
+')
+TO OPERATOR (ol_Cust_Prfl)
+SELECT * FROM OPERATOR(op_Cust_Prfl);
+);
+);

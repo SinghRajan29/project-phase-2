@@ -1,0 +1,41 @@
+.LOGON 192.168.72.128/Students,learning;
+  
+
+  INSERT INTO staging_layer.st_voice_plan_run
+  SELECT CAST(sbscrbr AS NUMBER(10)),
+	 Plan_Type,
+	 CAST(voice_time AS DECIMAL(7,2)),
+	 CAST(sms_used AS DECIMAL(5,2)),
+	 CAST(load_date AS DATE FORMAT 'dd-mm-yyyy'),
+	 CURRENT_TIMESTAMP
+  FROM Landing_layer.voice_plan_run
+	where load_date=(select max(distinct(load_date)) from
+                            landing_layer.data_plan_run);
+
+
+
+  .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE;
+.LOGOFF;
+
+
+3:28 PM 1/22/2021
+
+3:31 PM 1/22/2021
+
+3:57 PM 1/22/2021
+
+4:38 PM 1/22/2021
+
+5:53 PM 1/22/2021
+
+6:13 PM 1/22/2021
+
+9:06 PM 1/22/2021
+
+11:48 PM 1/22/2021
+
+12:27 AM 1/24/2021
+
+12:44 14-02-2021
+
+17:54 14-02-2021

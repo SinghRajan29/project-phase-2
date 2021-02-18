@@ -1,0 +1,49 @@
+DEFINE JOB Data_Plan_Run
+DESCRIPTION 'Load a Teradata table from a Data_Plan_Run'
+(
+DEFINE SCHEMA SCHEMA_Data_Plan_Run
+from table 'Landing_layer.Data_Plan_Run';
+
+DEFINE OPERATOR op_Data_Plan_Run
+TYPE DATACONNECTOR PRODUCER
+SCHEMA SCHEMA_Data_Plan_Run
+ATTRIBUTES
+(
+VARCHAR DirectoryPath= 'C:\Users\rs255097\OneDrive - Teradata\Desktop\phase 2\DataFiles',
+VARCHAR FileName =@file,
+VARCHAR Format = 'Delimited',
+VARCHAR OpenMode = 'Read',
+VARCHAR TextDelimiter =',',
+VARCHAR DateForm='AnsiDate',
+INTEGER SkipRows = 1
+);
+
+DEFINE OPERATOR up_Data_Plan_Run
+TYPE UPDATE
+SCHEMA *
+ATTRIBUTES
+(
+VARCHAR LogonMech = '',
+VARCHAR PrivateLogName = 'update_log',
+VARCHAR TdpId = '192.168.72.128',
+VARCHAR UserName = @user,
+VARCHAR UserPassword = @pass,
+VARCHAR LogTable = 'Landing_layer.Data_Plan_Run_LG',
+VARCHAR TargetTable = 'Landing_layer.Data_Plan_Run',
+VARCHAR DateForm='AnsiDate',
+INTEGER MaxSessions=6
+);
+
+
+STEP stUPDATE_FILE_NAME
+(
+APPLY
+('INSERT INTO Landing_layer.Data_Plan_Run
+(sbscrbr,Plan_Type,data_consumed,load_date)
+VALUES
+(:sbscrbr,:Plan_Type,:data_consumed,:load_date);
+')
+TO OPERATOR (up_Data_Plan_Run)
+SELECT * FROM OPERATOR(op_Data_Plan_Run);
+);
+);

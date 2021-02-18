@@ -1,0 +1,63 @@
+.LOGON 192.168.72.128/Students,learning;
+  
+  INSERT INTO staging_layer.st_cust_stats
+  SELECT CAST(sbscrbr AS NUMBER(10)),
+	 CAST(Paid_date AS DATE FORMAT 'dd-mm-yy'),
+	 null,
+	 CURRENT_TIMESTAMP
+  FROM Landing_layer.cust_stats;
+
+  .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE;
+
+UPDATE staging_layer.st_cust_stats
+ SET status =
+ CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) = 1 THEN
+        CASE WHEN (EXTRACT(MONTH FROM paid_date) = 12 AND
+        EXTRACT(DAY FROM paid_date) >= 10) OR
+        EXTRACT(YEAR FROM paid_date) = EXTRACT(YEAR FROM CURRENT_DATE)
+        THEN 'NORMAL'
+        ELSE
+                'DEFAULTER'
+        END       
+       
+ ELSE
+         CASE WHEN EXTRACT(YEAR FROM paid_date) = EXTRACT(YEAR FROM CURRENT_DATE) AND
+        EXTRACT(MONTH FROM paid_date) > EXTRACT(MONTH FROM CURRENT_DATE)-1
+        THEN 'NORMAL'                    
+     ELSE
+         CASE WHEN EXTRACT(YEAR FROM paid_date) = EXTRACT(YEAR FROM CURRENT_DATE) AND
+        EXTRACT(MONTH FROM paid_date) = EXTRACT(MONTH FROM CURRENT_DATE)-1 AND
+        EXTRACT(DAY FROM paid_date) >=10
+        THEN 'NORMAL'
+         ELSE
+                'DEFAULTER'
+         END
+     END
+ 
+ END ;
+
+UPDATE staging_layer.st_cust_stats
+ SET status = 'DEACTIVATED' WHERE sbscrbr not in (
+						select sbscrbr from staging_layer.st_cust_prfl) ;
+ 
+
+ .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE;
+
+.LOGOFF;
+
+
+3:25 PM 1/22/2021
+
+4:11 PM 1/23/2021
+
+6:58 PM 1/23/2021
+
+4:57 PM 1/24/2021
+
+5:08 PM 1/24/2021
+
+5:10 PM 1/24/2021
+
+12:43 14-02-2021
+
+17:53 14-02-2021

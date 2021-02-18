@@ -1,0 +1,36 @@
+.LOGON 192.168.72.128/Students,learning;
+  
+  
+  INSERT INTO staging_layer.st_data_plan_run
+  SELECT CAST(sbscrbr AS NUMBER(10)),
+	 Plan_Type,
+	 CAST(data_consumed AS DECIMAL(10,2)),
+	 CAST(load_date AS DATE FORMAT 'dd-mm-yyyy'),
+	 CURRENT_TIMESTAMP
+  FROM Landing_layer.data_plan_run
+  where load_date=(select max(distinct(load_date)) from
+                            landing_layer.data_plan_run);
+
+
+
+  .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE;
+.LOGOFF;
+
+
+3:28 PM 1/22/2021
+
+3:31 PM 1/22/2021
+
+3:57 PM 1/22/2021
+
+4:38 PM 1/22/2021
+
+11:50 PM 1/22/2021
+
+12:14 PM 1/23/2021
+
+12:23 AM 1/24/2021
+
+12:43 14-02-2021
+
+17:53 14-02-2021

@@ -1,0 +1,50 @@
+DEFINE JOB Voice_Plan_Run
+DESCRIPTION 'Load a Teradata table from a Voice_Plan_Run'
+(
+DEFINE SCHEMA SCHEMA_Voice_Plan_Run
+from table 'Landing_layer.Voice_Plan_Run';
+
+DEFINE OPERATOR op_Voice_Plan_Run
+TYPE DATACONNECTOR PRODUCER
+SCHEMA SCHEMA_Voice_Plan_Run
+ATTRIBUTES
+(
+VARCHAR DirectoryPath= 'C:\Users\rs255097\OneDrive - Teradata\Desktop\phase 2\DataFiles',
+VARCHAR FileName = @file,
+VARCHAR Format = 'Delimited',
+VARCHAR OpenMode = 'Read',
+VARCHAR TextDelimiter =',',
+VARCHAR DateForm='AnsiDate',
+INTEGER SkipRows = 1
+);
+
+
+
+DEFINE OPERATOR up_Voice_Plan_Run
+TYPE UPDATE
+SCHEMA *
+ATTRIBUTES
+(
+VARCHAR LogonMech = '',
+VARCHAR PrivateLogName = 'update_log',
+VARCHAR TdpId = '192.168.72.128',
+VARCHAR UserName = @user,
+VARCHAR UserPassword = @pass,
+VARCHAR LogTable = 'Landing_layer.Voice_Plan_Run_LG',
+VARCHAR TargetTable = 'Landing_layer.Voice_Plan_Run',
+VARCHAR DateForm='AnsiDate',
+INTEGER MaxSessions=6
+);
+
+STEP stLOAD_FILE_NAME
+(
+APPLY
+('INSERT INTO Landing_layer.Voice_Plan_Run
+(sbscrbr,Plan_Type,voice_time,sms_used,load_date)
+VALUES
+(:sbscrbr,:Plan_Type,:voice_time,:sms_used,:load_date);
+')
+TO OPERATOR (UP_Voice_Plan_Run)
+SELECT * FROM OPERATOR(op_Voice_Plan_Run);
+);
+);
